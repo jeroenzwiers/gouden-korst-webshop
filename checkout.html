@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Checkout – De Gouden Korst</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="demo-notice">Fictional bakery &middot; demo site for the <a href="https://paypalaihackathon.devpost.com/">PayPal AI Hackathon</a> &middot; payments run in the PayPal sandbox</div>
+<header class="site">
+  <a class="logo" href="index.html">De Gouden <span>Korst</span></a>
+  <nav><a href="#assortiment">Our bakes</a><a href="#about">About</a><a class="cart-link" href="checkout.html">Order (<span id="cart-count">0</span>)</a></nav>
+</header>
+<main>
+  <h2>Your order</h2>
+  <p class="lead">Choose when you'd like to collect your order at the shop, then pay with PayPal.</p>
+  <div class="checkout">
+    <section class="panel">
+      <h3>Order summary</h3>
+      <ul class="lines" id="lines"><li>Your order is empty. <a href="index.html#assortiment">Add some bakes</a>.</li></ul>
+      <div class="total"><span>Total</span><span id="total">&euro; 0.00</span></div>
+    </section>
+    <section class="panel" id="pay-panel">
+      <h3>Pickup</h3>
+      <label for="pickup-date">Pickup date</label>
+      <select id="pickup-date"></select>
+      <label>Pickup time</label>
+      <div class="slots" id="slots">
+        <label><input type="radio" name="slot" value="08:00–09:00" required> 08:00–09:00</label>
+        <label><input type="radio" name="slot" value="09:00–10:00" required> 09:00–10:00</label>
+        <label><input type="radio" name="slot" value="10:00–11:00" required> 10:00–11:00</label>
+        <label><input type="radio" name="slot" value="11:00–12:00" required> 11:00–12:00</label>
+        <label><input type="radio" name="slot" value="13:00–14:00" required> 13:00–14:00</label>
+        <label><input type="radio" name="slot" value="14:00–15:00" required> 14:00–15:00</label>
+        <label><input type="radio" name="slot" value="15:00–16:00" required> 15:00–16:00</label>
+        <label><input type="radio" name="slot" value="16:00–17:00" required> 16:00–17:00</label>
+      </div>
+      <label for="email">Email address</label>
+      <input id="email" type="email" placeholder="you@example.com" autocomplete="email">
+      <p class="note">Pay securely with PayPal. You collect and show your order number at the counter.</p>
+      <div id="paypal-buttons"></div>
+    </section>
+  </div>
+</main>
+<script src="js/cart.js"></script>
+<script src="https://www.paypal.com/sdk/js?client-id=BAA4q4fot5pS6JHV-30hykpjcs9SHkDGZlJkyLp5bNdk_4SlNexWKFtKIzzDAOdUTii4fz7z65Gc24y2CQ&currency=EUR&intent=capture"></script>
+<script>
+const PRODUCTS = {
+  "volkoren": { name: "Volkoren brood", price: 3.45 },
+  "wit-casino": { name: "Wit casino", price: 2.95 },
+  "meergranen": { name: "Meergranen", price: 3.75 },
+  "spelt": { name: "Speltbrood", price: 4.25 },
+  "desem": { name: "Desembrood", price: 4.95 },
+  "rogge": { name: "Roggebrood", price: 3.15 },
+  "stokbrood": { name: "Stokbrood", price: 1.95 },
+  "focaccia": { name: "Focaccia", price: 3.95 },
+  "croissant": { name: "Croissant", price: 1.45 },
+  "chocoladebroodje": { name: "Chocoladebroodje", price: 1.75 },
+  "kaneelbroodje": { name: "Kaneelbroodje", price: 2.25 },
+  "krentenbol": { name: "Krentenbol", price: 0.95 },
+  "muesli-bol": { name: "Mueslibol", price: 1.10 },
+  "saucijzenbroodje": { name: "Saucijzenbroodje", price: 2.10 },
+  "appelflap": { name: "Appelflap", price: 1.95 },
+  "gevulde-koek": { name: "Gevulde koek", price: 1.85 },
+  "boterkoek": { name: "Boterkoek", price: 1.65 },
+  "stroopwafel": { name: "Stroopwafels", price: 3.25 },
+  "speculaas": { name: "Speculaas", price: 2.95 },
+  "tompouce": { name: "Tompouce", price: 2.35 },
+  "appeltaart": { name: "Appeltaart", price: 3.25 },
+  "kwarktaart": { name: "Kwarktaart", price: 3.45 },
+  "bananenbrood": { name: "Bananenbrood", price: 3.95 },
+  "chocolade-cake": { name: "Chocoladecake", price: 4.45 }
+};
+const cart = readCart();
+const entries = Object.entries(cart).filter(([slug]) => PRODUCTS[slug]);
+const total = entries.reduce((n, [slug, q]) => n + PRODUCTS[slug].price * q, 0);
+if (entries.length) {
+  document.getElementById("lines").innerHTML = entries
+    .map(([slug, q]) => `<li><span>${q} × ${PRODUCTS[slug].name}</span><span>€ ${(PRODUCTS[slug].price * q).toFixed(2)}</span></li>`)
+    .join("");
+}
+document.getElementById("total").textContent = "€ " + total.toFixed(2);
+
+// Pickup on the next six opening days (Tuesday to Saturday).
+const dateSelect = document.getElementById("pickup-date");
+for (let d = new Date(), added = 0; added < 6; ) {
+  d.setDate(d.getDate() + 1);
+  if (d.getDay() === 0 || d.getDay() === 1) continue;
+  const opt = document.createElement("option");
+  opt.value = d.toISOString().slice(0, 10);
+  opt.textContent = d.toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long" });
+  dateSelect.appendChild(opt);
+  added++;
+}
+
+function pickupSlot() {
+  const slot = document.querySelector('input[name="slot"]:checked');
+  return slot ? `${dateSelect.value} ${slot.value}` : null;
+}
+
+paypal.Buttons({
+  onClick(data, actions) {
+    if (!entries.length) { alert("Your order is empty."); return actions.reject(); }
+    if (!pickupSlot()) { alert("Please choose a pickup time."); return actions.reject(); }
+    return actions.resolve();
+  },
+  createOrder(data, actions) {
+    return actions.order.create({
+      purchase_units: [{
+        description: "De Gouden Korst – pickup " + pickupSlot(),
+        custom_id: pickupSlot(),
+        amount: { currency_code: "EUR", value: total.toFixed(2) },
+      }],
+      application_context: { shipping_preference: "NO_SHIPPING" },
+    });
+  },
+  async onApprove(data, actions) {
+    const order = await actions.order.capture();
+    writeCart({});
+    document.getElementById("pay-panel").innerHTML =
+      `<div class="success"><h3>Thank you!</h3><p>Order <strong>${order.id}</strong> is paid.</p><p>Pick it up on <strong>${pickupSlot() || order.purchase_units[0].custom_id}</strong> at the shop.</p></div>`;
+  },
+}).render("#paypal-buttons");
+</script>
+<footer>De Gouden Korst &middot; fictional bakery &middot; Kerkstraat 1, Demodorp &middot; open Tue&ndash;Sat 7:30&ndash;17:00</footer>
+</body>
+</html>
