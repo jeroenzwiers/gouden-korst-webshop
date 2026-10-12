@@ -1,0 +1,35 @@
+:root {
+  --cream: #fbf3e6; --crust: #9a5b2e; --ink: #2b1d14; --muted: #7a6656; --gold: #d9a43f; --line: #ecdcc4;
+}
+* { box-sizing: border-box; }
+body { margin: 0; font: 16px/1.5 Georgia, "Times New Roman", serif; color: var(--ink); background: #fffdf9; }
+a { color: var(--crust); }
+.demo-notice { background: var(--ink); color: #f6e7cf; text-align: center; font: 13px/1.4 system-ui, sans-serif; padding: 6px 12px; }
+.demo-notice a { color: var(--gold); }
+header.site { display: flex; justify-content: space-between; align-items: center; gap: 16px; max-width: 1100px; margin: 0 auto; padding: 18px 16px; }
+.logo { font-size: 24px; font-weight: bold; letter-spacing: .5px; color: var(--crust); text-decoration: none; }
+.logo span { color: var(--gold); }
+nav a { margin-left: 16px; text-decoration: none; font-family: system-ui, sans-serif; font-size: 15px; }
+.hero { background: var(--cream); border-bottom: 1px solid var(--line); }
+.hero-inner { max-width: 1100px; margin: 0 auto; padding: 48px 16px; }
+.hero h1 { font-size: 40px; line-height: 1.15; margin: 0 0 12px; max-width: 640px; }
+.hero p { font-size: 18px; color: var(--muted); max-width: 560px; margin: 0; }
+main { max-width: 1100px; margin: 0 auto; padding: 32px 16px 64px; }
+h2 { font-size: 28px; margin: 0 0 4px; }
+.lead { color: var(--muted); margin: 0 0 24px; font-family: system-ui, sans-serif; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+.product { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+.product img { width: 100%; height: auto; display: block; aspect-ratio: 4 / 3; }
+.product .body { padding: 12px 14px 14px; display: flex; flex-direction: column; gap: 4px; flex: 1; }
+.product h3 { margin: 0; font-size: 18px; }
+.product p { margin: 0; color: var(--muted); font: 14px/1.4 system-ui, sans-serif; flex: 1; }
+.price { font: 600 17px system-ui, sans-serif; color: var(--ink); margin-top: 6px; }
+footer { border-top: 1px solid var(--line); color: var(--muted); font: 14px system-ui, sans-serif; text-align: center; padding: 24px 16px; }
+@media (max-width: 600px) {
+  header.site { flex-direction: column; align-items: flex-start; gap: 6px; }
+  nav a { margin: 0 14px 0 0; }
+  .hero-inner { padding: 32px 16px; }
+  .hero h1 { font-size: 30px; }
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+  .product h3 { font-size: 16px; }
+}
